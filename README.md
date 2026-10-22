@@ -45,7 +45,8 @@ Then ask your agent: *"Use guardian_review on this data: did ad_spend cause
 new_customers? Treat seasonality as a confounder."*
 
 Listing the tools does not require a key. A key is checked when `guardian_review` is called,
-and each review counts against your plan or trial quota.
+and each review counts against your plan or trial quota. Requesting an upload link
+(`guardian_request_upload`) does not count toward quota.
 
 ## Tool: `guardian_review`
 
@@ -54,7 +55,7 @@ Sanity-checks a causal claim before an agent acts on it.
 | Argument | Description |
 |---|---|
 | `cause`, `effect` | Required. Column names for the claim. |
-| `csv` or `data` | Dataset as CSV text or a list of row objects (exactly one). |
+| `csv`, `data` or `dataset_id` | Dataset as CSV text, a list of row objects, or the `dataset_id` of a previously uploaded file (see [Large datasets](#large-datasets)). Exactly one. |
 | `known_confounders` | Optional. Columns to adjust for; otherwise discovered automatically. |
 | `context` | Optional business context, e.g. "Q3 promo evaluation". |
 | `units`, `step` | Display-only unit hints; a treatment step to restate the effect in business terms. |
@@ -64,6 +65,41 @@ Sanity-checks a causal claim before an agent acts on it.
 The result includes a text summary (verdict, recommended action, effect versus
 correlation, interpretation) and the full structured response. Bad input, auth failures
 and quota errors come back as MCP tool errors with a descriptive message.
+
+## Tool: `guardian_request_upload`
+
+Returns a one-time upload link for a dataset too large to pass inline.
+
+| Result field | Description |
+|---|---|
+| `upload_url` | URL to PUT the file to. |
+| `dataset_id` | Pass this to `guardian_review` as `dataset_id`. |
+| `expires_at` | When the upload link expires. |
+| `max_bytes` | Maximum accepted upload size. |
+
+The result also includes a ready-to-run `curl` hint.
+
+## Large datasets
+
+Use inline `csv` or `data` for small data. For more than about 200 rows, use the upload flow:
+
+1. Call `guardian_request_upload`, then upload the file with the returned URL:
+
+   ```bash
+   curl -T data.csv "<upload_url>"
+   ```
+
+   Gzip is allowed, e.g. `curl -T data.csv.gz -H "Content-Encoding: gzip" "<upload_url>"`.
+   The PUT response returns only the schema (columns, dtypes, `n_rows`), never rows.
+2. Call `guardian_review` with `dataset_id` instead of `csv` or `data` (they are mutually
+   exclusive).
+
+Uploaded datasets are visible only to the API key that uploaded them and are deleted after
+24 hours.
+
+Example prompt: *"My data is in sales.csv (50,000 rows). Request an upload link, upload the
+file with curl, then use guardian_review with the returned dataset_id: did ad_spend cause
+new_customers?"*
 
 ## Support
 
