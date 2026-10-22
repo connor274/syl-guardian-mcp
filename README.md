@@ -61,10 +61,35 @@ Sanity-checks a causal claim before an agent acts on it.
 | `units`, `step` | Display-only unit hints; a treatment step to restate the effect in business terms. |
 | `time_col`, `adstock`, `se` | Time-series handling: row ordering, carryover effects, standard-error flavor. |
 | `test_design` | `true` or options. Also returns how long a spend-cut test needs to run. |
+| `estimator` | Optional. Omit or `auto` (default): an LLM picks the estimator after dataset cleaning. Or force one of `ols_adjusted`, `aipw`, `ipw`, `psm`, `dml_forest`. See [Estimator choice and DAG](#estimator-choice-and-dag). |
 
 The result includes a text summary (verdict, recommended action, effect versus
 correlation, interpretation) and the full structured response. Bad input, auth failures
 and quota errors come back as MCP tool errors with a descriptive message.
+
+### Estimator choice and DAG
+
+With `estimator` omitted or `"auto"`, an LLM picks one estimator (plus bounded parameters)
+from a fixed whitelist, filtered to what your data supports. It sees only a column schema
+summary, the DAG edges and the adjustment set, never your rows, and it never computes a
+number: the chosen estimator is run deterministically with fixed seeds. Passing a
+whitelist id forces that estimator with no LLM involved.
+
+If the LLM is unavailable or returns an invalid or ineligible choice, or a requested
+estimator is ineligible for the data or fails, Guardian falls back to a deterministic rule
+(no confounders: naive OLS; binary treatment: AIPW; otherwise adjusted OLS). This is always
+reported, never hidden.
+
+Every result includes two fields:
+
+- `estimator`: `id`, `params`, `source`, `rationale` and `fallback_reason`. `source` is
+  `rule` (also the value when no LLM is available), `llm`, `override`, or `fallback` (an LLM
+  choice or override was attempted but rejected or failed). `rationale` is LLM-written prose and is set only
+  for `llm`. `fallback_reason` explains why the requested estimator was not used, otherwise
+  `null`.
+- `dag`: the inferred causal graph, as `nodes` and `edges` of the form
+  `{"source": ..., "target": ...}`. It reflects the cleaned data and any
+  `known_confounders`.
 
 ## Tool: `guardian_request_upload`
 
