@@ -1,0 +1,15 @@
+# Registry signing keys (DNS auth credentials) -- never commit
+*.pem
+*.key
+key.*
+guardian-registry-key*
+
+# mcp-publisher local auth token
+.mcp_registry_token
+
+# Local env and OS/editor files
+.env
+.env.*
+.DS_Store
+.vscode/
+.idea/
