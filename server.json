@@ -1,0 +1,26 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.sylai/guardian",
+  "title": "Syl Guardian",
+  "description": "Causal guardrail: pass/caution/hold verdict on a causal claim before an agent acts.",
+  "repository": {
+    "url": "https://github.com/connor274/syl-guardian-mcp",
+    "source": "github"
+  },
+  "version": "0.2.0",
+  "websiteUrl": "https://sylai.io/guardian",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://guardian.sylai.io/mcp",
+      "headers": [
+        {
+          "name": "X-API-Key",
+          "description": "Your Syl Guardian API key (get a trial key at https://sylai.io/guardian).",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}
