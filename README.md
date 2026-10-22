@@ -92,14 +92,17 @@ Use inline `csv` or `data` for small data. For more than about 200 rows, use the
    Gzip is allowed, e.g. `curl -T data.csv.gz -H "Content-Encoding: gzip" "<upload_url>"`.
    The PUT response returns only the schema (columns, dtypes, `n_rows`), never rows.
 2. Call `guardian_review` with `dataset_id` instead of `csv` or `data` (they are mutually
-   exclusive).
+   exclusive). Each uploaded dataset is single-use.
 
-Uploaded datasets are visible only to the API key that uploaded them and are deleted after
-24 hours.
+Uploaded datasets are visible only to the API key that uploaded them. Each dataset is
+deleted as soon as `guardian_review` runs on it, even if the review fails, so a retry needs
+a fresh `guardian_request_upload`. Unused uploads are deleted after 30 minutes.
+
+A `dataset_id` can be reviewed once.
 
 Example prompt: *"My data is in sales.csv (50,000 rows). Request an upload link, upload the
-file with curl, then use guardian_review with the returned dataset_id: did ad_spend cause
-new_customers?"*
+file with curl, then use guardian_review once with the returned dataset_id (uploads are
+single-use): did ad_spend cause new_customers?"*
 
 ## Support
 
