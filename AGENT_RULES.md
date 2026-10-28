@@ -11,6 +11,8 @@ claude mcp add --transport http syl-guardian https://guardian.sylai.io/mcp \
 
 Docs: https://sylai.io/guardian/docs. Machine-readable summary: https://sylai.io/llms.txt. Hosted copy of this file: https://sylai.io/guardian-agent-rules.md.
 
+Python agents can call Guardian with `pip install syl-guardian-client` (CrewAI and LangChain tools included) instead of writing REST calls.
+
 The rule text below is the same for every agent format. Copy the section for the file your agent reads.
 
 ---

@@ -72,6 +72,31 @@ Ready-to-paste sections for `CLAUDE.md`, `AGENTS.md` and `.cursorrules` are in
 - Docs: <https://sylai.io/guardian/docs>
 - Trial key: <https://sylai.io/guardian>
 
+## Python client
+
+For Python agents and scripts, [`syl-guardian-client`](https://pypi.org/project/syl-guardian-client/)
+is a thin, MIT-licensed client for the hosted service. It only makes HTTP calls to
+`https://guardian.sylai.io`; every number is still computed deterministically by the
+service, never by an LLM. Set your key in `SYL_GUARDIAN_API_KEY`.
+
+```bash
+pip install syl-guardian-client            # extras: [crewai], [langchain]
+```
+
+```python
+from syl_guardian_client import GuardianClient
+
+result = GuardianClient().review(
+    "ad_spend", "conversion_value",
+    data=rows, time_col="date", step=500,
+    known_confounders=["brand_query_click_pct"],
+)
+result.verdict  # "pass" | "caution" | "hold"
+```
+
+- PyPI: <https://pypi.org/project/syl-guardian-client/>
+- Source: <https://github.com/connor274/syl-guardian-client>
+
 ## Tool: `guardian_review`
 
 Sanity-checks a causal claim before an agent acts on it.
