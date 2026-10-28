@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.sylai/guardian",
   "title": "Syl Guardian",
-  "description": "Is this ROAS or ad-spend lift causal? Pass/caution/hold check before agents act on budget claims.",
+  "description": "Causal check on AI agent claims, from ad-spend/ROAS lift to any decision: pass, caution or hold.",
   "repository": {
     "url": "https://github.com/connor274/syl-guardian-mcp",
     "source": "github"
