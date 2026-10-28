@@ -2,12 +2,12 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.sylai/guardian",
   "title": "Syl Guardian",
-  "description": "Causal guardrail: pass/caution/hold verdict on a causal claim before an agent acts.",
+  "description": "Is this ROAS or ad-spend lift causal? Pass/caution/hold check before agents act on budget claims.",
   "repository": {
     "url": "https://github.com/connor274/syl-guardian-mcp",
     "source": "github"
   },
-  "version": "0.3.0",
+  "version": "0.3.1",
   "websiteUrl": "https://sylai.io/guardian",
   "remotes": [
     {
