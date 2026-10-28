@@ -2,15 +2,20 @@
 
 <!-- mcp-name: io.sylai/guardian -->
 
-Syl Guardian is a causal guardrail for AI agents. Before an agent acts on a claim like
-"ad spend drove new customers", Guardian checks it against your data and returns a
-`pass`, `caution` or `hold` verdict, with the naive correlation versus the
-confounder-adjusted causal effect, a confidence score and a plain-English recommendation.
+**Is this ROAS / spend-to-revenue lift actually causal?**
 
-All numbers are deterministic statistics. They are never computed by an LLM. By default
-the summary is a fixed template, and the same data and request give the same verdict,
-estimate and interval. Optional LLM help (cleaning, graph pruning, estimator choice, prose)
-is controlled per step with `config`; see [Engine config](#engine-config).
+Syl Guardian is a Model Context Protocol (MCP) server that works as a causal-validation
+agent guardrail. When an AI agent (Claude or any MCP client) is about to act on a claim
+about ad spend or budget, such as "this campaign's ROAS is 4x, scale it up" or "ad spend
+drove new customers", Guardian checks the claim against your data and returns a `pass`,
+`caution` or `hold` verdict, with the naive correlation versus the confounder-adjusted
+causal effect, a confidence score and a plain-English recommendation.
+
+Every number is computed deterministically by statistical code and never by an LLM. By
+default the summary is a fixed template. For strict reproducibility, set `cleaning` and
+`discovery` to `rule` in `config`: the default (`llm`) for those two steps can change the
+adjustment set, and so the estimate. See [Engine config](#engine-config) and
+[Determinism and reproducibility](#determinism-and-reproducibility).
 
 This repository holds the public listing metadata and connection instructions for the
 hosted Guardian MCP server. Guardian itself is a hosted service.
@@ -49,6 +54,23 @@ new_customers? Treat seasonality as a confounder."*
 Listing the tools does not require a key. A key is checked when `guardian_review` is called,
 and each review counts against your plan or trial quota. Requesting an upload link
 (`guardian_request_upload`) does not count toward quota.
+
+## Use with agents
+
+Add this rule to your agent's instructions so it checks ad-spend and budget claims
+before recommending a change:
+
+> Whenever evaluating marketing campaigns, ad platforms, or budget allocation, verify the
+> claimed effect is causal using the Syl Guardian MCP tool (guardian_review) before giving
+> a final recommendation.
+
+Ready-to-paste sections for `CLAUDE.md`, `AGENTS.md` and `.cursorrules` are in
+[AGENT_RULES.md](AGENT_RULES.md). Also available:
+
+- Rules file: <https://sylai.io/guardian-agent-rules.md>
+- Machine-readable summary: <https://sylai.io/llms.txt>
+- Docs: <https://sylai.io/guardian/docs>
+- Trial key: <https://sylai.io/guardian>
 
 ## Tool: `guardian_review`
 
